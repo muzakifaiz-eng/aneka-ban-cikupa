@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { getPostLoginPath } from "@/lib/post-login";
 
 export const Route = createFileRoute("/login")({
   ssr: false,
@@ -18,8 +19,11 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/", replace: true });
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (data.user) {
+        const path = await getPostLoginPath(data.user.id);
+        navigate({ to: path, replace: true });
+      }
     });
   }, [navigate]);
 
@@ -35,7 +39,9 @@ function LoginPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/", replace: true });
+    const { data } = await supabase.auth.getUser();
+    const path = data.user ? await getPostLoginPath(data.user.id) : "/";
+    navigate({ to: path, replace: true });
   }
 
   return (
