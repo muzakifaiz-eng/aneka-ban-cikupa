@@ -1,10 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { LayoutDashboard, Package, ShoppingCart, Users, Settings, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/_admin/admin")({
-  component: AdminPage,
+  component: AdminLayout,
   head: () => ({
     meta: [
       { title: "Admin - Aneka Ban Cikupa" },
@@ -13,28 +14,17 @@ export const Route = createFileRoute("/_authenticated/_admin/admin")({
   }),
 });
 
-type ProfileRow = {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-  created_at: string;
-};
+const nav = [
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/products", label: "Products", icon: Package },
+  { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { to: "/admin/customers", label: "Customers", icon: Users },
+  { to: "/admin/settings", label: "Settings", icon: Settings },
+];
 
-function AdminPage() {
+function AdminLayout() {
   const navigate = useNavigate();
-  const [profiles, setProfiles] = useState<ProfileRow[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("id, email, full_name, created_at")
-        .order("created_at", { ascending: false });
-      setProfiles((data as ProfileRow[]) ?? []);
-      setLoading(false);
-    })();
-  }, []);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -42,43 +32,69 @@ function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-12">
-      <div className="mx-auto max-w-3xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin</h1>
-            <p className="text-sm text-muted-foreground">
-              Halaman ini hanya dapat diakses oleh admin.
-            </p>
-          </div>
-          <Button onClick={handleSignOut} variant="outline">
-            Keluar
+    <div className="min-h-screen bg-muted/30 flex">
+      <aside className="hidden md:flex w-60 flex-col border-r bg-card">
+        <div className="h-16 flex items-center px-6 border-b">
+          <span className="font-bold text-foreground">Admin Panel</span>
+        </div>
+        <nav className="flex-1 p-3 space-y-1">
+          {nav.map((item) => {
+            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="p-3 border-t">
+          <Button onClick={handleSignOut} variant="outline" className="w-full justify-start gap-2">
+            <LogOut className="h-4 w-4" /> Sign out
           </Button>
         </div>
+      </aside>
 
-        <div className="mt-8 rounded-2xl border bg-card p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-foreground">Pengguna</h2>
-          {loading ? (
-            <p className="mt-4 text-sm text-muted-foreground">Memuat...</p>
-          ) : (
-            <ul className="mt-4 divide-y">
-              {profiles.map((p) => (
-                <li key={p.id} className="py-3 text-sm">
-                  <span className="font-medium text-foreground">
-                    {p.full_name ?? "Tanpa nama"}
-                  </span>
-                  <span className="ml-2 text-muted-foreground">{p.email}</span>
-                </li>
-              ))}
-              {profiles.length === 0 && (
-                <li className="py-3 text-sm text-muted-foreground">
-                  Belum ada data.
-                </li>
-              )}
-            </ul>
-          )}
-        </div>
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 border-b bg-card flex items-center px-4 md:px-6 justify-between">
+          <div className="md:hidden flex items-center gap-2 overflow-x-auto">
+            {nav.map((item) => {
+              const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "rounded-md px-2 py-1 text-xs font-medium whitespace-nowrap",
+                    active ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="hidden md:block text-sm text-muted-foreground">
+            Aneka Ban Cikupa
+          </div>
+          <Button onClick={handleSignOut} variant="ghost" size="sm" className="md:hidden">
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </header>
+        <main className="flex-1 p-4 md:p-8">
+          <Outlet />
+        </main>
       </div>
-    </main>
+    </div>
   );
 }
