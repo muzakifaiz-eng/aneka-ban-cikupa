@@ -46,34 +46,55 @@ export type Database = {
       }
       products: {
         Row: {
+          brand: string | null
+          category: string | null
           created_at: string
           description: string | null
           id: string
-          image_url: string | null
-          name: string
+          image_urls: string[]
           price: number
+          product_name: string
+          short_description: string | null
+          status: string
           stock: number
+          tire_size: string | null
           updated_at: string
+          warranty: string | null
+          weight: number | null
         }
         Insert: {
+          brand?: string | null
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
-          image_url?: string | null
-          name: string
+          image_urls?: string[]
           price?: number
+          product_name: string
+          short_description?: string | null
+          status?: string
           stock?: number
+          tire_size?: string | null
           updated_at?: string
+          warranty?: string | null
+          weight?: number | null
         }
         Update: {
+          brand?: string | null
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
-          image_url?: string | null
-          name?: string
+          image_urls?: string[]
           price?: number
+          product_name?: string
+          short_description?: string | null
+          status?: string
           stock?: number
+          tire_size?: string | null
           updated_at?: string
+          warranty?: string | null
+          weight?: number | null
         }
         Relationships: []
       }
