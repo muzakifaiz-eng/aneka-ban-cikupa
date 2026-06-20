@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import {
   ShieldCheck, BadgeCheck, Truck, HeartHandshake, Wallet, Rocket,
-  Phone, Mail, MapPin, MessageCircle, ChevronDown, Menu, X, Star,
+  Phone, Mail, MapPin, MessageCircle, ChevronDown, Star,
   Search, ClipboardCheck, Flame, Settings2, CheckCircle2, Facebook, Instagram,
 } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
 import heroTires from "@/assets/hero-tires.jpg";
 import processImg from "@/assets/process-workshop.jpg";
 import productTruck from "@/assets/product-truck.jpg";
@@ -46,62 +46,17 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const NAV = [
-  { label: "Beranda", href: "#beranda" },
-  { label: "Tentang", href: "#tentang" },
-  { label: "Keunggulan", href: "#keunggulan" },
-  { label: "Produk", href: "#produk" },
-  { label: "Proses", href: "#proses" },
-  { label: "Testimoni", href: "#testimoni" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Kontak", href: "#kontak" },
-];
-
 function Index() {
-  const [navOpen, setNavOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* NAV */}
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-primary-deep/90 backdrop-blur-lg">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
-          <a href="#beranda" className="flex items-center gap-2 text-white">
-            <div className="grid h-10 w-10 place-items-center rounded-xl" style={{ background: "var(--gradient-accent)" }}>
-              <span className="font-extrabold text-primary-deep">A</span>
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-extrabold tracking-tight">ANEKA BAN</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Cikupa</div>
-            </div>
-          </a>
-          <nav className="hidden items-center gap-7 lg:flex">
-            {NAV.map((n) => (
-              <a key={n.href} href={n.href} className="text-sm font-medium text-white/80 transition hover:text-accent">{n.label}</a>
-            ))}
-          </nav>
-          <a href={waLink("Halo Aneka Ban Cikupa, saya tertarik dengan ban vulkanisir.")}
-            target="_blank" rel="noreferrer"
-            className="hidden items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-primary-deep shadow-[0_8px_24px_-8px_oklch(0.72_0.18_50/0.6)] transition hover:scale-105 lg:inline-flex">
-            <MessageCircle className="h-4 w-4" /> Hubungi Kami
-          </a>
-          <button onClick={() => setNavOpen(!navOpen)} className="rounded-md p-2 text-white lg:hidden">
-            {navOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-        {navOpen && (
-          <div className="border-t border-white/10 bg-primary-deep lg:hidden">
-            <div className="flex flex-col px-4 py-3">
-              {NAV.map((n) => (
-                <a key={n.href} href={n.href} onClick={() => setNavOpen(false)} className="border-b border-white/5 py-3 text-sm text-white/80">{n.label}</a>
-              ))}
-              <a href={waLink("Halo Aneka Ban Cikupa")} target="_blank" rel="noreferrer"
-                className="mt-3 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-primary-deep">
-                <MessageCircle className="h-4 w-4" /> Hubungi via WhatsApp
-              </a>
-            </div>
-          </div>
-        )}
-      </header>
+      <SiteHeader
+        nav={[
+          { label: "Beranda", href: "/#beranda" },
+          { label: "Produk", href: "/#produk" },
+          { label: "Tentang", href: "/#tentang" },
+          { label: "Kontak", href: "/#kontak" },
+        ]}
+      />
 
       {/* HERO */}
       <section id="beranda" className="relative overflow-hidden pt-20" style={{ background: "var(--gradient-hero)" }}>
@@ -434,7 +389,13 @@ function Index() {
           <div>
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">Navigasi</h4>
             <ul className="mt-4 space-y-2 text-sm">
-              {NAV.slice(0, 5).map((n) => (
+              {[
+                { label: "Beranda", href: "#beranda" },
+                { label: "Tentang", href: "#tentang" },
+                { label: "Keunggulan", href: "#keunggulan" },
+                { label: "Produk", href: "#produk" },
+                { label: "Kontak", href: "#kontak" },
+              ].map((n) => (
                 <li key={n.href}><a href={n.href} className="transition hover:text-accent">{n.label}</a></li>
               ))}
             </ul>
