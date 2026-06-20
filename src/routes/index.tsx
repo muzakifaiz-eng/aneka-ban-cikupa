@@ -389,7 +389,13 @@ function Index() {
           <div>
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">Navigasi</h4>
             <ul className="mt-4 space-y-2 text-sm">
-              {NAV.slice(0, 5).map((n) => (
+              {[
+                { label: "Beranda", href: "#beranda" },
+                { label: "Tentang", href: "#tentang" },
+                { label: "Keunggulan", href: "#keunggulan" },
+                { label: "Produk", href: "#produk" },
+                { label: "Kontak", href: "#kontak" },
+              ].map((n) => (
                 <li key={n.href}><a href={n.href} className="transition hover:text-accent">{n.label}</a></li>
               ))}
             </ul>
