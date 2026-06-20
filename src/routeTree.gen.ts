@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProdukRouteImport } from './routes/produk'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,6 +22,11 @@ import { Route as AuthenticatedAdminAdminProductsRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminAdminOrdersRouteImport } from './routes/_authenticated/_admin/admin.orders'
 import { Route as AuthenticatedAdminAdminCustomersRouteImport } from './routes/_authenticated/_admin/admin.customers'
 
+const ProdukRoute = ProdukRouteImport.update({
+  id: '/produk',
+  path: '/produk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -83,6 +89,7 @@ const AuthenticatedAdminAdminCustomersRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/produk': typeof ProdukRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/admin/customers': typeof AuthenticatedAdminAdminCustomersRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/produk': typeof ProdukRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/admin/customers': typeof AuthenticatedAdminAdminCustomersRoute
   '/admin/orders': typeof AuthenticatedAdminAdminOrdersRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/produk': typeof ProdukRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/produk'
     | '/dashboard'
     | '/admin'
     | '/admin/customers'
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/produk'
     | '/dashboard'
     | '/admin/customers'
     | '/admin/orders'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/produk'
     | '/_authenticated/_admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/_admin/admin'
@@ -156,10 +168,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ProdukRoute: typeof ProdukRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/produk': {
+      id: '/produk'
+      path: '/produk'
+      fullPath: '/produk'
+      preLoaderRoute: typeof ProdukRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -294,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  ProdukRoute: ProdukRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
