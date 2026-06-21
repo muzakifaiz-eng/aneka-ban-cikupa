@@ -125,7 +125,7 @@ export function SiteHeader({ nav = DEFAULT_NAV }: { nav?: NavItem[] }) {
           <IconButton
             scrolled={scrolled}
             ariaLabel="Keranjang"
-            onClick={() => navigate({ to: "/" })}
+            onClick={() => navigate({ to: "/cart" })}
             badge={cartCount}
           >
             <ShoppingCart className="h-5 w-5" />
@@ -352,8 +352,8 @@ function UserMenuContent({
 
 const customerItems = [
   { to: "/dashboard", label: "My Profile", icon: UserIcon },
-  { to: "/dashboard", label: "My Orders", icon: ClipboardList },
-  { to: "/dashboard", label: "Wishlist", icon: Heart },
+  { to: "/orders", label: "My Orders", icon: ClipboardList },
+  { to: "/cart", label: "Cart", icon: ShoppingCart },
   { to: "/dashboard", label: "Settings", icon: Settings },
 ];
 

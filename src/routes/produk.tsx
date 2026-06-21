@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ShoppingCart, Zap, Search, ImageIcon } from "lucide-react";
+import { ShoppingCart, Zap, Search, ImageIcon, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ type Product = {
 };
 
 function ProductsPublic() {
+  const navigate = useNavigate();
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -74,21 +75,22 @@ function ProductsPublic() {
   });
 
   function addToCart(p: Product) {
-    const raw = localStorage.getItem("cart");
-    const cart: Array<{ id: string; qty: number; product_name: string; price: number }> =
-      raw ? JSON.parse(raw) : [];
+    const raw = localStorage.getItem("abc_cart");
+    const cart: Array<any> = raw ? JSON.parse(raw) : [];
     const existing = cart.find((c) => c.id === p.id);
     if (existing) existing.qty += 1;
-    else cart.push({ id: p.id, qty: 1, product_name: p.product_name, price: p.price });
-    localStorage.setItem("cart", JSON.stringify(cart));
+    else cart.push({
+      id: p.id, qty: 1, product_name: p.product_name, price: p.price,
+      image_url: p.image_urls?.[0] ?? null, brand: p.brand, tire_size: p.tire_size, stock: p.stock,
+    });
+    localStorage.setItem("abc_cart", JSON.stringify(cart));
     window.dispatchEvent(new Event("cart:updated"));
     toast.success(`${p.product_name} ditambahkan ke keranjang`);
   }
 
   function buyNow(p: Product) {
     addToCart(p);
-    const msg = `Halo Aneka Ban Cikupa, saya ingin membeli ${p.product_name}${p.tire_size ? ` (${p.tire_size})` : ""}.`;
-    window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`, "_blank");
+    navigate({ to: "/checkout" });
   }
 
   return (
@@ -162,11 +164,21 @@ function ProductsPublic() {
                     Rp {Number(p.price).toLocaleString("id-ID")}
                   </div>
                   <div className="text-xs text-muted-foreground">Stok: {p.stock}</div>
-                  <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div className="mt-4 grid grid-cols-3 gap-1.5">
                     <Button
                       size="sm"
                       variant="outline"
-                      className="gap-1.5"
+                      className="gap-1 px-2"
+                      asChild
+                    >
+                      <Link to="/produk/$id" params={{ id: p.id }}>
+                        <Eye className="h-3.5 w-3.5" /> Detail
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1 px-2"
                       disabled={p.stock <= 0}
                       onClick={() => addToCart(p)}
                     >
@@ -174,7 +186,7 @@ function ProductsPublic() {
                     </Button>
                     <Button
                       size="sm"
-                      className="gap-1.5 bg-accent text-accent-foreground hover:bg-accent/90"
+                      className="gap-1 px-2 bg-accent text-accent-foreground hover:bg-accent/90"
                       disabled={p.stock <= 0}
                       onClick={() => buyNow(p)}
                     >
