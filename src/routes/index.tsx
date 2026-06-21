@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ShieldCheck, BadgeCheck, Truck, HeartHandshake, Wallet, Rocket,
   Phone, Mail, MapPin, MessageCircle, ChevronDown, Star,
-  Search, ClipboardCheck, Flame, Settings2, CheckCircle2, Facebook, Instagram,
+  Search, ClipboardCheck, Flame, Settings2, CheckCircle2, Facebook, Instagram, ShoppingBag,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import heroTires from "@/assets/hero-tires.jpg";
@@ -174,10 +174,9 @@ function Index() {
               </h2>
               <p className="mt-4 text-white/70">Pilihan ban vulkanisir berkualitas untuk berbagai jenis kendaraan niaga.</p>
             </div>
-            <a href={waLink("Halo, saya ingin daftar lengkap katalog produk Aneka Ban Cikupa.")} target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline">
+            <Link to="/produk" className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline">
               Lihat semua katalog <ChevronDown className="h-4 w-4 -rotate-90" />
-            </a>
+            </Link>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -194,10 +193,10 @@ function Index() {
                 <div className="p-5">
                   <h3 className="text-base font-bold text-white">{p.n}</h3>
                   <p className="mt-1.5 text-xs leading-relaxed text-white/60">{p.d}</p>
-                  <a href={waLink(`Halo, saya ingin konsultasi mengenai ${p.n}.`)} target="_blank" rel="noreferrer"
+                  <Link to="/produk"
                     className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-4 py-2.5 text-xs font-bold text-primary-deep transition hover:scale-[1.02]">
-                    <MessageCircle className="h-3.5 w-3.5" /> Konsultasi WhatsApp
-                  </a>
+                    <ShoppingBag className="h-3.5 w-3.5" /> Belanja Sekarang
+                  </Link>
                 </div>
               </article>
             ))}

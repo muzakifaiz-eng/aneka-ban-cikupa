@@ -3,7 +3,7 @@ import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   Search, ShoppingCart, User as UserIcon, Menu, X,
   LayoutDashboard, Package, Users as UsersIcon, Settings, LogOut,
-  Heart, ClipboardList, ChevronDown,
+  ClipboardList, ChevronDown,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
