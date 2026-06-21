@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { Trash2, ChevronDown, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -118,8 +119,8 @@ function OrdersPage() {
                 <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Belum ada pesanan.</TableCell></TableRow>
               ) : (
                 orders.map((o) => (
-                  <>
-                    <TableRow key={o.id}>
+                  <Fragment key={o.id}>
+                    <TableRow>
                       <TableCell>
                         <button onClick={() => toggleExpand(o.id)} className="p-1">
                           {expanded === o.id ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -176,7 +177,7 @@ function OrdersPage() {
                         </TableCell>
                       </TableRow>
                     )}
-                  </>
+                  </Fragment>
                 ))
               )}
             </TableBody>
