@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   ShieldCheck, BadgeCheck, Truck, HeartHandshake, Wallet, Rocket,
   Phone, Mail, MapPin, MessageCircle, ChevronDown, Star,
   Search, ClipboardCheck, Flame, Settings2, CheckCircle2, Facebook, Instagram, ShoppingBag,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
+import { supabase } from "@/integrations/supabase/client";
 import heroTires from "@/assets/hero-tires.jpg";
 import processImg from "@/assets/process-workshop.jpg";
 import productTruck from "@/assets/product-truck.jpg";
