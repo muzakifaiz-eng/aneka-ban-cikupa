@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   ShieldCheck, BadgeCheck, Truck, HeartHandshake, Wallet, Rocket,
   Phone, Mail, MapPin, MessageCircle, ChevronDown, Star,
   Search, ClipboardCheck, Flame, Settings2, CheckCircle2, Facebook, Instagram, ShoppingBag,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
+import { supabase } from "@/integrations/supabase/client";
 import heroTires from "@/assets/hero-tires.jpg";
 import processImg from "@/assets/process-workshop.jpg";
 import productTruck from "@/assets/product-truck.jpg";
@@ -47,6 +49,29 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  type RemoteReview = { id: string; rating: number; title: string; message: string; reviewer_name: string | null; created_at: string };
+  const [reviews, setReviews] = useState<RemoteReview[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("reviews")
+      .select("id,rating,title,message,reviewer_name,created_at")
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => setReviews((data as RemoteReview[]) ?? []));
+  }, []);
+
+  const defaultTestimonials = [
+    { n: "Bapak Hendra", r: "Pemilik Armada Truk", q: "Kualitas ban vulkanisirnya tidak kalah dengan ban baru. Sudah 3 tahun langganan, tidak pernah kecewa. Harga juga sangat bersahabat untuk operasional truk saya." },
+    { n: "Ibu Sari", r: "Manajer Logistik", q: "Pelayanan amanah, pengiriman cepat, dan kualitas konsisten. Aneka Ban Cikupa membantu kami menekan biaya operasional armada hingga 40%." },
+    { n: "Bapak Yusuf", r: "Pengusaha Bus Pariwisata", q: "Sudah mencoba banyak vulkanisir, hanya Aneka Ban Cikupa yang memberi hasil paling memuaskan. Tim teknisnya juga sangat profesional dan ramah." },
+  ];
+
+  const displayTestimonials = reviews.length > 0
+    ? reviews.map((r) => ({ n: r.reviewer_name || "Pelanggan", r: r.title, q: r.message, rating: r.rating }))
+    : defaultTestimonials.map((t) => ({ ...t, rating: 5 }));
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader
@@ -248,19 +273,17 @@ function Index() {
             </h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {[
-              { n: "Bapak Hendra", r: "Pemilik Armada Truk", q: "Kualitas ban vulkanisirnya tidak kalah dengan ban baru. Sudah 3 tahun langganan, tidak pernah kecewa. Harga juga sangat bersahabat untuk operasional truk saya." },
-              { n: "Ibu Sari", r: "Manajer Logistik", q: "Pelayanan amanah, pengiriman cepat, dan kualitas konsisten. Aneka Ban Cikupa membantu kami menekan biaya operasional armada hingga 40%." },
-              { n: "Bapak Yusuf", r: "Pengusaha Bus Pariwisata", q: "Sudah mencoba banyak vulkanisir, hanya Aneka Ban Cikupa yang memberi hasil paling memuaskan. Tim teknisnya juga sangat profesional dan ramah." },
-            ].map((t) => (
-              <figure key={t.n} className="relative rounded-2xl bg-card p-7 shadow-[var(--shadow-card)]">
+            {displayTestimonials.map((t, idx) => (
+              <figure key={(t as any).n + idx} className="relative rounded-2xl bg-card p-7 shadow-[var(--shadow-card)]">
                 <div className="flex gap-1 text-accent">
-                  {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={`h-4 w-4 ${i < (t.rating ?? 5) ? "fill-current" : "opacity-30"}`} />
+                  ))}
                 </div>
                 <blockquote className="mt-4 text-sm leading-relaxed text-foreground">"{t.q}"</blockquote>
                 <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-4">
                   <div className="grid h-11 w-11 place-items-center rounded-full font-bold text-white" style={{ background: "var(--gradient-primary)" }}>
-                    {t.n.charAt(t.n.indexOf(" ") + 1)}
+                    {t.n.charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className="text-sm font-bold text-primary">{t.n}</div>

@@ -6,8 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
-import { CheckCircle2, Circle, ChevronLeft } from "lucide-react";
+import { CheckCircle2, Circle, ChevronLeft, Star } from "lucide-react";
 import { toast } from "sonner";
+import { ReviewModal } from "@/components/review-modal";
 
 export const Route = createFileRoute("/_authenticated/orders/$id")({
   component: OrderDetail,
@@ -47,15 +48,29 @@ function OrderDetail() {
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [hasReview, setHasReview] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  async function loadReview(uid: string) {
+    const { data } = await supabase.from("reviews").select("id").eq("order_id", id).eq("user_id", uid).maybeSingle();
+    setHasReview(!!data);
+  }
 
   useEffect(() => {
     (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u.user?.id ?? null;
+      setUserId(uid);
+      setUserName(u.user?.user_metadata?.full_name ?? u.user?.user_metadata?.name ?? u.user?.email ?? null);
       const [{ data: o }, { data: its }] = await Promise.all([
         supabase.from("orders").select("*").eq("id", id).maybeSingle(),
         supabase.from("order_items").select("*").eq("order_id", id),
       ]);
       setOrder(o as Order | null);
       setItems((its as Item[]) ?? []);
+      if (uid) await loadReview(uid);
       setLoading(false);
     })();
   }, [id]);
@@ -149,9 +164,34 @@ function OrderDetail() {
             </Card>
 
             <Button onClick={reorder} className="w-full">Reorder</Button>
+
+            {order.status === "completed" && userId && (
+              hasReview ? (
+                <Card className="p-4 text-sm text-muted-foreground flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  Terima kasih, ulasan Anda telah dikirim.
+                </Card>
+              ) : (
+                <Button onClick={() => setReviewOpen(true)} variant="outline" className="w-full gap-2">
+                  <Star className="h-4 w-4" /> Tulis Ulasan (Opsional)
+                </Button>
+              )
+            )}
           </div>
         </div>
       </main>
+
+      {userId && (
+        <ReviewModal
+          open={reviewOpen}
+          onOpenChange={setReviewOpen}
+          orderId={order.id}
+          userId={userId}
+          reviewerName={userName}
+          productId={items[0]?.product_id ?? null}
+          onSubmitted={() => loadReview(userId)}
+        />
+      )}
     </div>
   );
 }
