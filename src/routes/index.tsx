@@ -273,19 +273,17 @@ function Index() {
             </h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {[
-              { n: "Bapak Hendra", r: "Pemilik Armada Truk", q: "Kualitas ban vulkanisirnya tidak kalah dengan ban baru. Sudah 3 tahun langganan, tidak pernah kecewa. Harga juga sangat bersahabat untuk operasional truk saya." },
-              { n: "Ibu Sari", r: "Manajer Logistik", q: "Pelayanan amanah, pengiriman cepat, dan kualitas konsisten. Aneka Ban Cikupa membantu kami menekan biaya operasional armada hingga 40%." },
-              { n: "Bapak Yusuf", r: "Pengusaha Bus Pariwisata", q: "Sudah mencoba banyak vulkanisir, hanya Aneka Ban Cikupa yang memberi hasil paling memuaskan. Tim teknisnya juga sangat profesional dan ramah." },
-            ].map((t) => (
-              <figure key={t.n} className="relative rounded-2xl bg-card p-7 shadow-[var(--shadow-card)]">
+            {displayTestimonials.map((t, idx) => (
+              <figure key={(t as any).n + idx} className="relative rounded-2xl bg-card p-7 shadow-[var(--shadow-card)]">
                 <div className="flex gap-1 text-accent">
-                  {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={`h-4 w-4 ${i < (t.rating ?? 5) ? "fill-current" : "opacity-30"}`} />
+                  ))}
                 </div>
                 <blockquote className="mt-4 text-sm leading-relaxed text-foreground">"{t.q}"</blockquote>
                 <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-4">
                   <div className="grid h-11 w-11 place-items-center rounded-full font-bold text-white" style={{ background: "var(--gradient-primary)" }}>
-                    {t.n.charAt(t.n.indexOf(" ") + 1)}
+                    {t.n.charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className="text-sm font-bold text-primary">{t.n}</div>
