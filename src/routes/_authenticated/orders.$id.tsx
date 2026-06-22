@@ -48,15 +48,29 @@ function OrderDetail() {
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [hasReview, setHasReview] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  async function loadReview(uid: string) {
+    const { data } = await supabase.from("reviews").select("id").eq("order_id", id).eq("user_id", uid).maybeSingle();
+    setHasReview(!!data);
+  }
 
   useEffect(() => {
     (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u.user?.id ?? null;
+      setUserId(uid);
+      setUserName(u.user?.user_metadata?.full_name ?? u.user?.user_metadata?.name ?? u.user?.email ?? null);
       const [{ data: o }, { data: its }] = await Promise.all([
         supabase.from("orders").select("*").eq("id", id).maybeSingle(),
         supabase.from("order_items").select("*").eq("order_id", id),
       ]);
       setOrder(o as Order | null);
       setItems((its as Item[]) ?? []);
+      if (uid) await loadReview(uid);
       setLoading(false);
     })();
   }, [id]);
