@@ -49,6 +49,29 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  type RemoteReview = { id: string; rating: number; title: string; message: string; reviewer_name: string | null; created_at: string };
+  const [reviews, setReviews] = useState<RemoteReview[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("reviews")
+      .select("id,rating,title,message,reviewer_name,created_at")
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => setReviews((data as RemoteReview[]) ?? []));
+  }, []);
+
+  const defaultTestimonials = [
+    { n: "Bapak Hendra", r: "Pemilik Armada Truk", q: "Kualitas ban vulkanisirnya tidak kalah dengan ban baru. Sudah 3 tahun langganan, tidak pernah kecewa. Harga juga sangat bersahabat untuk operasional truk saya." },
+    { n: "Ibu Sari", r: "Manajer Logistik", q: "Pelayanan amanah, pengiriman cepat, dan kualitas konsisten. Aneka Ban Cikupa membantu kami menekan biaya operasional armada hingga 40%." },
+    { n: "Bapak Yusuf", r: "Pengusaha Bus Pariwisata", q: "Sudah mencoba banyak vulkanisir, hanya Aneka Ban Cikupa yang memberi hasil paling memuaskan. Tim teknisnya juga sangat profesional dan ramah." },
+  ];
+
+  const displayTestimonials = reviews.length > 0
+    ? reviews.map((r) => ({ n: r.reviewer_name || "Pelanggan", r: r.title, q: r.message, rating: r.rating }))
+    : defaultTestimonials.map((t) => ({ ...t, rating: 5 }));
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader
