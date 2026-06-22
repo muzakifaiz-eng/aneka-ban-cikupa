@@ -164,9 +164,34 @@ function OrderDetail() {
             </Card>
 
             <Button onClick={reorder} className="w-full">Reorder</Button>
+
+            {order.status === "completed" && userId && (
+              hasReview ? (
+                <Card className="p-4 text-sm text-muted-foreground flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  Terima kasih, ulasan Anda telah dikirim.
+                </Card>
+              ) : (
+                <Button onClick={() => setReviewOpen(true)} variant="outline" className="w-full gap-2">
+                  <Star className="h-4 w-4" /> Tulis Ulasan (Opsional)
+                </Button>
+              )
+            )}
           </div>
         </div>
       </main>
+
+      {userId && (
+        <ReviewModal
+          open={reviewOpen}
+          onOpenChange={setReviewOpen}
+          orderId={order.id}
+          userId={userId}
+          reviewerName={userName}
+          productId={items[0]?.product_id ?? null}
+          onSubmitted={() => loadReview(userId)}
+        />
+      )}
     </div>
   );
 }
