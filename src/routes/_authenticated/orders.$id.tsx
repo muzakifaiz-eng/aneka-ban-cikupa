@@ -6,8 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
-import { CheckCircle2, Circle, ChevronLeft } from "lucide-react";
+import { CheckCircle2, Circle, ChevronLeft, Star } from "lucide-react";
 import { toast } from "sonner";
+import { ReviewModal } from "@/components/review-modal";
 
 export const Route = createFileRoute("/_authenticated/orders/$id")({
   component: OrderDetail,
