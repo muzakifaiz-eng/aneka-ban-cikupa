@@ -3,7 +3,7 @@ import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   Search, ShoppingCart, User as UserIcon, Menu, X,
   LayoutDashboard, Package, Users as UsersIcon, Settings, LogOut,
-  ClipboardList, ChevronDown,
+  ClipboardList, ChevronDown, Star,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
@@ -354,6 +354,7 @@ const customerItems = [
   { to: "/dashboard", label: "My Profile", icon: UserIcon },
   { to: "/orders", label: "My Orders", icon: ClipboardList },
   { to: "/cart", label: "Cart", icon: ShoppingCart },
+  { to: "/my-reviews", label: "My Reviews", icon: Star },
   { to: "/dashboard", label: "Settings", icon: Settings },
 ];
 

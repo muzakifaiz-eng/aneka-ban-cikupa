@@ -272,6 +272,9 @@ function Index() {
               Dipercaya oleh Para Profesional
             </h2>
           </div>
+          <div className="mt-6 flex justify-center">
+            <WriteReviewButton label="Tulis Ulasan Anda" className="bg-accent text-primary-deep hover:bg-accent/90" />
+          </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {displayTestimonials.map((t, idx) => (
               <figure key={(t as any).n + idx} className="relative rounded-2xl bg-card p-7 shadow-[var(--shadow-card)]">
