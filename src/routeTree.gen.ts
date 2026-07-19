@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProdukRouteImport } from './routes/produk'
+import { Route as MyReviewsRouteImport } from './routes/my-reviews'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -31,6 +32,11 @@ import { Route as AuthenticatedAdminAdminCustomersRouteImport } from './routes/_
 const ProdukRoute = ProdukRouteImport.update({
   id: '/produk',
   path: '/produk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyReviewsRoute = MyReviewsRouteImport.update({
+  id: '/my-reviews',
+  path: '/my-reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
+  '/my-reviews': typeof MyReviewsRoute
   '/produk': typeof ProdukRouteWithChildren
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
+  '/my-reviews': typeof MyReviewsRoute
   '/produk': typeof ProdukRouteWithChildren
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
+  '/my-reviews': typeof MyReviewsRoute
   '/produk': typeof ProdukRouteWithChildren
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cart'
     | '/login'
+    | '/my-reviews'
     | '/produk'
     | '/checkout'
     | '/dashboard'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cart'
     | '/login'
+    | '/my-reviews'
     | '/produk'
     | '/checkout'
     | '/dashboard'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/cart'
     | '/login'
+    | '/my-reviews'
     | '/produk'
     | '/_authenticated/_admin'
     | '/_authenticated/checkout'
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   CartRoute: typeof CartRoute
   LoginRoute: typeof LoginRoute
+  MyReviewsRoute: typeof MyReviewsRoute
   ProdukRoute: typeof ProdukRouteWithChildren
 }
 
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/produk'
       fullPath: '/produk'
       preLoaderRoute: typeof ProdukRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-reviews': {
+      id: '/my-reviews'
+      path: '/my-reviews'
+      fullPath: '/my-reviews'
+      preLoaderRoute: typeof MyReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -459,6 +479,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   CartRoute: CartRoute,
   LoginRoute: LoginRoute,
+  MyReviewsRoute: MyReviewsRoute,
   ProdukRoute: ProdukRouteWithChildren,
 }
 export const routeTree = rootRouteImport
