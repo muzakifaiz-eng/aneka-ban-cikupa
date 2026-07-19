@@ -13,6 +13,7 @@ import productTruck from "@/assets/product-truck.jpg";
 import productBus from "@/assets/product-bus.jpg";
 import productPickup from "@/assets/product-pickup.jpg";
 import productNiaga from "@/assets/product-niaga.jpg";
+import { WriteReviewButton } from "@/components/write-review-button";
 
 const WA_NUMBER = "6281234567890";
 const waLink = (msg: string) =>
