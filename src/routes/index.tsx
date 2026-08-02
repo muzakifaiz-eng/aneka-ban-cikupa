@@ -9,10 +9,6 @@ import { SiteHeader } from "@/components/site-header";
 import { supabase } from "@/integrations/supabase/client";
 import heroTires from "@/assets/hero-tires.jpg";
 import processImg from "@/assets/process-workshop.jpg";
-import productTruck from "@/assets/product-truck.jpg";
-import productBus from "@/assets/product-bus.jpg";
-import productPickup from "@/assets/product-pickup.jpg";
-import productNiaga from "@/assets/product-niaga.jpg";
 import { WriteReviewButton } from "@/components/write-review-button";
 
 import { waLink, waMessages } from "@/lib/whatsapp";
@@ -50,6 +46,24 @@ export const Route = createFileRoute("/")({
 function Index() {
   type RemoteReview = { id: string; rating: number; title: string; message: string; reviewer_name: string | null; created_at: string };
   const [reviews, setReviews] = useState<RemoteReview[]>([]);
+
+  type HomeProduct = { id: string; product_name: string; brand: string | null; tire_size: string | null; price: number; stock: number; image_urls: string[] | null };
+  const [products, setProducts] = useState<HomeProduct[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("products")
+      .select("id, product_name, brand, tire_size, price, stock, image_urls")
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(4)
+      .then(({ data }) => {
+        setProducts((data as HomeProduct[]) ?? []);
+        setLoadingProducts(false);
+      });
+  }, []);
+
 
   useEffect(() => {
     supabase
@@ -202,22 +216,31 @@ function Index() {
               Lihat semua katalog <ChevronDown className="h-4 w-4 -rotate-90" />
             </Link>
           </div>
+          {loadingProducts ? (
+            <p className="mt-12 text-center text-white/60">Memuat produk…</p>
+          ) : products.length === 0 ? (
+            <p className="mt-12 text-center text-white/60">Belum ada produk tersedia.</p>
+          ) : (
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { img: productTruck, n: "Ban Vulkanisir Truk", d: "Kuat untuk muatan berat jarak jauh dengan daya cengkeram optimal." },
-              { img: productBus, n: "Ban Vulkanisir Bus", d: "Nyaman, stabil, dan tahan lama untuk operasional bus harian." },
-              { img: productPickup, n: "Ban Vulkanisir Pickup", d: "Solusi ekonomis untuk pickup dan kendaraan angkut ringan." },
-              { img: productNiaga, n: "Ban Vulkanisir Niaga", d: "Performa maksimal untuk armada logistik dan kendaraan komersial." },
-            ].map((p) => (
-              <article key={p.n} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur transition hover:border-accent/40 hover:bg-white/10">
+            {products.map((p) => (
+              <article key={p.id} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur transition hover:border-accent/40 hover:bg-white/10">
                 <div className="relative aspect-square overflow-hidden bg-black">
-                  <img src={p.img} alt={p.n} width={900} height={900} loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110" />
+                  {p.image_urls?.[0] ? (
+                    <img src={p.image_urls[0]} alt={p.product_name} loading="lazy"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-110" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-white/30">
+                      <ShoppingBag className="h-10 w-10" />
+                    </div>
+                  )}
                 </div>
                 <div className="p-5">
-                  <h3 className="text-base font-bold text-white">{p.n}</h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-white/60">{p.d}</p>
-                  <Link to="/produk"
+                  <div className="text-xs text-accent">{p.brand ?? "—"}</div>
+                  <h3 className="mt-1 text-base font-bold text-white line-clamp-2">{p.product_name}</h3>
+                  {p.tire_size && <p className="mt-1 text-xs text-white/60">Ukuran: {p.tire_size}</p>}
+                  <div className="mt-2 text-lg font-extrabold text-white">Rp {Number(p.price).toLocaleString("id-ID")}</div>
+                  <p className="text-xs text-white/60">{p.stock > 0 ? `Stok: ${p.stock}` : "Stok habis"}</p>
+                  <Link to="/produk/$id" params={{ id: p.id }}
                     className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-4 py-2.5 text-xs font-bold text-primary-deep transition hover:scale-[1.02]">
                     <ShoppingBag className="h-3.5 w-3.5" /> Belanja Sekarang
                   </Link>
@@ -225,6 +248,8 @@ function Index() {
               </article>
             ))}
           </div>
+          )}
+
         </div>
       </section>
 
