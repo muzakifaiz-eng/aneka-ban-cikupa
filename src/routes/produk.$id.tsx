@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { useCart } from "@/hooks/use-cart";
 import { toast } from "sonner";
 
-const WA_NUMBER = "6281234567890";
+import { waLink as waHref, waMessages } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/produk/$id")({
   component: ProductDetail,
@@ -79,9 +79,7 @@ function ProductDetail() {
     navigate({ to: "/checkout" });
   }
 
-  const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
-    `Halo Aneka Ban Cikupa, saya ingin konsultasi tentang produk ${p.product_name}${p.tire_size ? ` (${p.tire_size})` : ""}.`,
-  )}`;
+  const waLink = waHref(waMessages.product(`${p.product_name}${p.tire_size ? ` (${p.tire_size})` : ""}`));
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -15,9 +15,7 @@ import productPickup from "@/assets/product-pickup.jpg";
 import productNiaga from "@/assets/product-niaga.jpg";
 import { WriteReviewButton } from "@/components/write-review-button";
 
-const WA_NUMBER = "6281234567890";
-const waLink = (msg: string) =>
-  `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+import { waLink, waMessages } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -102,7 +100,7 @@ function Index() {
               Aneka Ban Cikupa menyediakan ban vulkanisir berkualitas, tahan lama, dan amanah dengan harga terjangkau untuk truk, bus, pickup, dan armada usaha Anda.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href={waLink("Halo Aneka Ban Cikupa, saya ingin berkonsultasi tentang ban vulkanisir.")} target="_blank" rel="noreferrer"
+              <a href={waLink(waMessages.general)} target="_blank" rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-primary-deep shadow-[0_14px_40px_-10px_oklch(0.72_0.18_50/0.6)] transition hover:scale-105">
                 <MessageCircle className="h-5 w-5" /> Hubungi Kami
               </a>
@@ -444,7 +442,7 @@ function Index() {
       </footer>
 
       {/* FLOATING WA */}
-      <a href={waLink("Halo Aneka Ban Cikupa, saya ingin bertanya.")} target="_blank" rel="noreferrer"
+      <a href={waLink(waMessages.general)} target="_blank" rel="noreferrer"
         aria-label="Chat WhatsApp"
         className="animate-float fixed bottom-6 right-6 z-50 grid h-14 w-14 place-items-center rounded-full text-white"
         style={{ background: "oklch(0.62 0.18 145)" }}>
