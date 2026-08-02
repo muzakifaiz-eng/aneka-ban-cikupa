@@ -9,10 +9,6 @@ import { SiteHeader } from "@/components/site-header";
 import { supabase } from "@/integrations/supabase/client";
 import heroTires from "@/assets/hero-tires.jpg";
 import processImg from "@/assets/process-workshop.jpg";
-import productTruck from "@/assets/product-truck.jpg";
-import productBus from "@/assets/product-bus.jpg";
-import productPickup from "@/assets/product-pickup.jpg";
-import productNiaga from "@/assets/product-niaga.jpg";
 import { WriteReviewButton } from "@/components/write-review-button";
 
 import { waLink, waMessages } from "@/lib/whatsapp";
