@@ -112,12 +112,9 @@ const stageMeta: Record<OrderStatus, {
   },
 };
 
-const ADMIN_WA = "6281234567890"; // ganti ke nomor admin resmi
-const STORE_MAP_URL = "https://maps.google.com/?q=Aneka+Ban+Cikupa";
+import { waLink, waMessages } from "@/lib/whatsapp";
 
-function waLink(phone: string, text: string) {
-  return `https://wa.me/${phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(text)}`;
-}
+const STORE_MAP_URL = "https://maps.google.com/?q=Aneka+Ban+Cikupa";
 
 function OrderDetail() {
   const { id } = Route.useParams();
@@ -330,7 +327,7 @@ function OrderDetail() {
           )}
           {(order.status === "processing" || order.status === "ready") && (
             <Button asChild className="gap-2">
-              <a href={waLink(ADMIN_WA, `Halo, saya ingin bertanya mengenai pesanan ${orderCode}`)} target="_blank" rel="noreferrer">
+              <a href={waLink(waMessages.order(orderCode))} target="_blank" rel="noreferrer">
                 <MessageCircle className="h-4 w-4" /> Hubungi Admin
               </a>
             </Button>
@@ -356,7 +353,7 @@ function OrderDetail() {
           )}
           {isCancelled && (
             <Button asChild className="gap-2 bg-green-600 hover:bg-green-700">
-              <a href={waLink(ADMIN_WA, `Halo, saya ingin bertanya mengenai pesanan ${orderCode} yang dibatalkan.`)} target="_blank" rel="noreferrer">
+              <a href={waLink(waMessages.cancelledOrder(orderCode))} target="_blank" rel="noreferrer">
                 <MessageCircle className="h-4 w-4" /> Hubungi Admin via WhatsApp
               </a>
             </Button>
@@ -472,7 +469,7 @@ function OrderDetail() {
                       {order.whatsapp ? (
                         <a
                           className="hover:text-primary transition-colors"
-                          href={waLink(order.whatsapp, `Halo`)}
+                          href={waLink("Halo", order.whatsapp)}
                           target="_blank"
                           rel="noreferrer"
                         >
