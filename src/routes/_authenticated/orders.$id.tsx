@@ -112,7 +112,7 @@ const stageMeta: Record<OrderStatus, {
   },
 };
 
-import { ADMIN_WA, waLink, waMessages } from "@/lib/whatsapp";
+import { waLink, waMessages } from "@/lib/whatsapp";
 
 const STORE_MAP_URL = "https://maps.google.com/?q=Aneka+Ban+Cikupa";
 
