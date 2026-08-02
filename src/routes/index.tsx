@@ -51,6 +51,24 @@ function Index() {
   type RemoteReview = { id: string; rating: number; title: string; message: string; reviewer_name: string | null; created_at: string };
   const [reviews, setReviews] = useState<RemoteReview[]>([]);
 
+  type HomeProduct = { id: string; product_name: string; brand: string | null; tire_size: string | null; price: number; stock: number; image_urls: string[] | null };
+  const [products, setProducts] = useState<HomeProduct[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("products")
+      .select("id, product_name, brand, tire_size, price, stock, image_urls")
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(4)
+      .then(({ data }) => {
+        setProducts((data as HomeProduct[]) ?? []);
+        setLoadingProducts(false);
+      });
+  }, []);
+
+
   useEffect(() => {
     supabase
       .from("reviews")
