@@ -352,69 +352,33 @@ function Index() {
       {/* KONTAK */}
       <section id="kontak" className="relative overflow-hidden py-20 md:py-28" style={{ background: "var(--gradient-hero)" }}>
         <div className="mx-auto max-w-7xl px-4 md:px-6">
-          <div className="grid gap-12 lg:grid-cols-2">
-            <div className="text-white">
-              <span className="text-xs font-bold uppercase tracking-[0.25em] text-accent">Hubungi Kami</span>
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">Siap Membantu Kebutuhan Ban Anda</h2>
-              <p className="mt-4 text-white/70">Tim kami siap menjawab pertanyaan dan memberikan penawaran terbaik untuk armada Anda.</p>
-              <ul className="mt-8 space-y-5">
-                {[
-                  { i: MapPin, t: "Alamat", v: "Jl. Raya Cikupa No. 88, Tangerang, Banten" },
-                  { i: Phone, t: "WhatsApp", v: "+62 812-3456-7890" },
-                  { i: Mail, t: "Email", v: "halo@anekabancikupa.co.id" },
-                ].map(({ i: Icon, t, v }) => (
-                  <li key={t} className="flex items-start gap-4">
-                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-primary-deep">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-white/50">{t}</div>
-                      <div className="text-sm font-semibold text-white">{v}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
-                <iframe
-                  title="Lokasi Aneka Ban Cikupa"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.123!2d106.5!3d-6.25!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCikupa%2C%20Tangerang!5e0!3m2!1sen!2sid!4v1700000000"
-                  width="100%" height="240" loading="lazy" className="block border-0" />
-              </div>
-            </div>
-
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const f = e.currentTarget;
-              const data = new FormData(f);
-              const msg = `Halo Aneka Ban Cikupa,\n\nNama: ${data.get("nama")}\nTelepon: ${data.get("telepon")}\nKebutuhan: ${data.get("pesan")}`;
-              window.open(waLink(msg), "_blank");
-            }} className="rounded-2xl bg-white p-7 shadow-[var(--shadow-elegant)] md:p-9">
-              <h3 className="text-xl font-bold text-primary">Minta Penawaran</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Isi formulir, tim kami merespons cepat via WhatsApp.</p>
-              <div className="mt-6 space-y-4">
-                {[
-                  { n: "nama", l: "Nama Lengkap", t: "text" },
-                  { n: "telepon", l: "Nomor WhatsApp", t: "tel" },
-                  { n: "email", l: "Email (opsional)", t: "email", req: false },
-                ].map((fd) => (
-                  <div key={fd.n}>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">{fd.l}</label>
-                    <input name={fd.n} type={fd.t} required={fd.req !== false}
-                      className="mt-1.5 w-full rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground outline-none transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/20" />
+          <div className="mx-auto max-w-3xl text-white">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-accent">Hubungi Kami</span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">Siap Membantu Kebutuhan Ban Anda</h2>
+            <p className="mt-4 text-white/70">Tim kami siap menjawab pertanyaan dan memberikan penawaran terbaik untuk armada Anda.</p>
+            <ul className="mt-8 space-y-5">
+              {[
+                { i: MapPin, t: "Alamat", v: "Jl. Raya Cikupa No. 88, Tangerang, Banten" },
+                { i: Phone, t: "WhatsApp", v: "+62 812-3456-7890" },
+                { i: Mail, t: "Email", v: "halo@anekabancikupa.co.id" },
+              ].map(({ i: Icon, t, v }) => (
+                <li key={t} className="flex items-start gap-4">
+                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-primary-deep">
+                    <Icon className="h-5 w-5" />
                   </div>
-                ))}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">Kebutuhan Anda</label>
-                  <textarea name="pesan" rows={4} required
-                    placeholder="Contoh: Saya butuh 10 ban vulkanisir untuk truk fuso..."
-                    className="mt-1.5 w-full resize-none rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground outline-none transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/20" />
-                </div>
-                <button type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-primary-deep shadow-[var(--shadow-accent)] transition hover:scale-[1.02]">
-                  <MessageCircle className="h-5 w-5" /> Kirim & Lanjutkan ke WhatsApp
-                </button>
-              </div>
-            </form>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-white/50">{t}</div>
+                    <div className="text-sm font-semibold text-white">{v}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
+              <iframe
+                title="Lokasi Aneka Ban Cikupa"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.123!2d106.5!3d-6.25!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCikupa%2C%20Tangerang!5e0!3m2!1sen!2sid!4v1700000000"
+                width="100%" height="240" loading="lazy" className="block border-0" />
+            </div>
           </div>
         </div>
       </section>
