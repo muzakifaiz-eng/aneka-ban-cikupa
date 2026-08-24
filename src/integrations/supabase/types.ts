@@ -133,6 +133,71 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          account_holder: string | null
+          account_number: string | null
+          admin_note: string | null
+          amount: number
+          bank: string | null
+          created_at: string
+          id: string
+          order_id: string
+          paid_at: string | null
+          proof_url: string | null
+          rejection_reason: string | null
+          sender_name: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          account_holder?: string | null
+          account_number?: string | null
+          admin_note?: string | null
+          amount?: number
+          bank?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          paid_at?: string | null
+          proof_url?: string | null
+          rejection_reason?: string | null
+          sender_name?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          account_holder?: string | null
+          account_number?: string | null
+          admin_note?: string | null
+          amount?: number
+          bank?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          paid_at?: string | null
+          proof_url?: string | null
+          rejection_reason?: string | null
+          sender_name?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           brand: string | null
@@ -213,6 +278,72 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      refunds: {
+        Row: {
+          account_holder: string | null
+          account_number: string | null
+          admin_note: string | null
+          amount: number
+          bank: string | null
+          created_at: string
+          id: string
+          order_id: string
+          payment_id: string | null
+          proof_url: string | null
+          refunded_at: string | null
+          status: Database["public"]["Enums"]["refund_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_holder?: string | null
+          account_number?: string | null
+          admin_note?: string | null
+          amount?: number
+          bank?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          payment_id?: string | null
+          proof_url?: string | null
+          refunded_at?: string | null
+          status?: Database["public"]["Enums"]["refund_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_holder?: string | null
+          account_number?: string | null
+          admin_note?: string | null
+          amount?: number
+          bank?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          payment_id?: string | null
+          proof_url?: string | null
+          refunded_at?: string | null
+          status?: Database["public"]["Enums"]["refund_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -317,6 +448,13 @@ export type Database = {
         | "ready"
         | "completed"
         | "cancelled"
+      payment_status:
+        | "awaiting_payment"
+        | "awaiting_verification"
+        | "verified"
+        | "rejected"
+        | "expired"
+      refund_status: "pending" | "processing" | "refunded" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -453,6 +591,14 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      payment_status: [
+        "awaiting_payment",
+        "awaiting_verification",
+        "verified",
+        "rejected",
+        "expired",
+      ],
+      refund_status: ["pending", "processing", "refunded", "rejected"],
     },
   },
 } as const
