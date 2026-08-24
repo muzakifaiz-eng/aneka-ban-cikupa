@@ -21,6 +21,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticated/checkout'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders.index'
+import { Route as AuthenticatedPaymentIdRouteImport } from './routes/_authenticated/payment.$id'
 import { Route as AuthenticatedOrdersIdRouteImport } from './routes/_authenticated/orders.$id'
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
@@ -89,6 +90,11 @@ const AuthenticatedOrdersIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedOrdersRoute,
   } as any)
+const AuthenticatedPaymentIdRoute = AuthenticatedPaymentIdRouteImport.update({
+  id: '/payment/$id',
+  path: '/payment/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOrdersIdRoute = AuthenticatedOrdersIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/produk/$id': typeof ProdukIdRoute
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
+  '/payment/$id': typeof AuthenticatedPaymentIdRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
   '/admin/customers': typeof AuthenticatedAdminAdminCustomersRoute
   '/admin/orders': typeof AuthenticatedAdminAdminOrdersRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/produk/$id': typeof ProdukIdRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
+  '/payment/$id': typeof AuthenticatedPaymentIdRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
   '/admin/customers': typeof AuthenticatedAdminAdminCustomersRoute
   '/admin/orders': typeof AuthenticatedAdminAdminOrdersRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/produk/$id': typeof ProdukIdRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/_authenticated/orders/$id': typeof AuthenticatedOrdersIdRoute
+  '/_authenticated/payment/$id': typeof AuthenticatedPaymentIdRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
   '/_authenticated/_admin/admin/customers': typeof AuthenticatedAdminAdminCustomersRoute
   '/_authenticated/_admin/admin/orders': typeof AuthenticatedAdminAdminOrdersRoute
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/produk/$id'
     | '/admin'
     | '/orders/$id'
+    | '/payment/$id'
     | '/orders/'
     | '/admin/customers'
     | '/admin/orders'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/produk/$id'
     | '/orders/$id'
+    | '/payment/$id'
     | '/orders'
     | '/admin/customers'
     | '/admin/orders'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/produk/$id'
     | '/_authenticated/_admin/admin'
     | '/_authenticated/orders/$id'
+    | '/_authenticated/payment/$id'
     | '/_authenticated/orders/'
     | '/_authenticated/_admin/admin/customers'
     | '/_authenticated/_admin/admin/orders'
@@ -354,6 +366,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/orders/'
       preLoaderRoute: typeof AuthenticatedOrdersIndexRouteImport
       parentRoute: typeof AuthenticatedOrdersRoute
+    }
+    '/_authenticated/payment/$id': {
+      id: '/_authenticated/payment/$id'
+      path: '/payment/$id'
+      fullPath: '/payment/$id'
+      preLoaderRoute: typeof AuthenticatedPaymentIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/orders/$id': {
       id: '/_authenticated/orders/$id'
@@ -471,6 +490,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCheckoutRoute: typeof AuthenticatedCheckoutRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRouteWithChildren
+  AuthenticatedPaymentIdRoute: typeof AuthenticatedPaymentIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -478,6 +498,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCheckoutRoute: AuthenticatedCheckoutRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRouteWithChildren,
+  AuthenticatedPaymentIdRoute: AuthenticatedPaymentIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
