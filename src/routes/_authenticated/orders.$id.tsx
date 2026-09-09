@@ -148,7 +148,7 @@ function OrderDetail() {
     setUserId(uid);
     setUserName(u.user?.user_metadata?.full_name ?? u.user?.user_metadata?.name ?? u.user?.email ?? null);
 
-    const [{ data: o }, { data: its }, { data: hist }] = await Promise.all([
+    const [{ data: o }, { data: its }, { data: hist }, { data: pay }, { data: ref }] = await Promise.all([
       supabase.from("orders").select("*").eq("id", id).maybeSingle(),
       supabase.from("order_items").select("*").eq("order_id", id),
       supabase
@@ -156,9 +156,14 @@ function OrderDetail() {
         .select("id, status, created_at")
         .eq("order_id", id)
         .order("created_at", { ascending: true }),
+      supabase.from("payments").select("status, bank, amount, rejection_reason").eq("order_id", id).maybeSingle(),
+      supabase.from("refunds").select("status").eq("order_id", id).maybeSingle(),
     ]);
 
+    setPayment((pay as any) ?? null);
+    setRefund((ref as any) ?? null);
     setOrder(o as Order | null);
+
     const rawItems = (its as Item[]) ?? [];
 
     // Enrich items with brand + tire_size from products
