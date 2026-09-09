@@ -113,6 +113,8 @@ const stageMeta: Record<OrderStatus, {
 };
 
 import { waLink, waMessages } from "@/lib/whatsapp";
+import { paymentStatusMeta, refundStatusMeta, rupiah, type PaymentStatus, type RefundStatus } from "@/lib/payment";
+
 
 const STORE_MAP_URL = "https://maps.google.com/?q=Aneka+Ban+Cikupa";
 
@@ -129,6 +131,11 @@ function OrderDetail() {
   const [hasReview, setHasReview] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [payment, setPayment] = useState<{
+    status: PaymentStatus; bank: string | null; amount: number; rejection_reason: string | null;
+  } | null>(null);
+  const [refund, setRefund] = useState<{ status: RefundStatus } | null>(null);
+
 
   async function loadReview(uid: string) {
     const { data } = await supabase.from("reviews").select("id").eq("order_id", id).eq("user_id", uid).maybeSingle();
@@ -141,7 +148,7 @@ function OrderDetail() {
     setUserId(uid);
     setUserName(u.user?.user_metadata?.full_name ?? u.user?.user_metadata?.name ?? u.user?.email ?? null);
 
-    const [{ data: o }, { data: its }, { data: hist }] = await Promise.all([
+    const [{ data: o }, { data: its }, { data: hist }, { data: pay }, { data: ref }] = await Promise.all([
       supabase.from("orders").select("*").eq("id", id).maybeSingle(),
       supabase.from("order_items").select("*").eq("order_id", id),
       supabase
@@ -149,9 +156,14 @@ function OrderDetail() {
         .select("id, status, created_at")
         .eq("order_id", id)
         .order("created_at", { ascending: true }),
+      supabase.from("payments").select("status, bank, amount, rejection_reason").eq("order_id", id).maybeSingle(),
+      supabase.from("refunds").select("status").eq("order_id", id).maybeSingle(),
     ]);
 
+    setPayment((pay as any) ?? null);
+    setRefund((ref as any) ?? null);
     setOrder(o as Order | null);
+
     const rawItems = (its as Item[]) ?? [];
 
     // Enrich items with brand + tire_size from products
