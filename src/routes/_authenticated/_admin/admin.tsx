@@ -18,6 +18,8 @@ const nav = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/products", label: "Products", icon: Package },
   { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { to: "/admin/payments", label: "Pembayaran", icon: Wallet },
+  { to: "/admin/refunds", label: "Refund", icon: RotateCcw },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/settings", label: "Settings", icon: Settings },
