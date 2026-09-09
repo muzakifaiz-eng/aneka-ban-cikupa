@@ -113,6 +113,8 @@ const stageMeta: Record<OrderStatus, {
 };
 
 import { waLink, waMessages } from "@/lib/whatsapp";
+import { paymentStatusMeta, refundStatusMeta, rupiah, type PaymentStatus, type RefundStatus } from "@/lib/payment";
+
 
 const STORE_MAP_URL = "https://maps.google.com/?q=Aneka+Ban+Cikupa";
 
@@ -129,6 +131,11 @@ function OrderDetail() {
   const [hasReview, setHasReview] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [payment, setPayment] = useState<{
+    status: PaymentStatus; bank: string | null; amount: number; rejection_reason: string | null;
+  } | null>(null);
+  const [refund, setRefund] = useState<{ status: RefundStatus } | null>(null);
+
 
   async function loadReview(uid: string) {
     const { data } = await supabase.from("reviews").select("id").eq("order_id", id).eq("user_id", uid).maybeSingle();
