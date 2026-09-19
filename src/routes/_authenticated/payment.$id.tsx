@@ -20,7 +20,16 @@ import {
 
 export const Route = createFileRoute("/_authenticated/payment/$id")({
   component: PaymentPage,
-  head: () => ({ meta: [{ title: "Pembayaran Pesanan — Aneka Ban Cikupa" }] }),
+  head: () => ({
+    meta: [
+      { title: "Pembayaran Pesanan — Aneka Ban Cikupa" },
+      { name: "description", content: "Pilih rekening dan kirim bukti pembayaran pesanan Aneka Ban Cikupa." },
+      { property: "og:title", content: "Pembayaran Pesanan — Aneka Ban Cikupa" },
+      { property: "og:description", content: "Pilih rekening dan kirim bukti pembayaran pesanan Aneka Ban Cikupa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
 });
 
 type Payment = {
@@ -101,7 +110,8 @@ function PaymentPage() {
         proof_url = signed?.signedUrl ?? null;
       }
 
-      const acc = BANK_ACCOUNTS.find((b) => b.key === bank)!;
+      const acc = BANK_ACCOUNTS.find((b) => b.key === bank);
+      if (!acc) throw new Error("Rekening pembayaran tidak ditemukan");
       const { error } = await supabase
         .from("payments")
         .update({
