@@ -5,11 +5,21 @@ import { SiteHeader } from "@/components/site-header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Package } from "lucide-react";
+import { CreditCard, Package } from "lucide-react";
+import type { PaymentStatus } from "@/lib/payment";
 
 export const Route = createFileRoute("/_authenticated/orders/")({
   component: MyOrders,
-  head: () => ({ meta: [{ title: "Pesanan Saya — Aneka Ban Cikupa" }] }),
+  head: () => ({
+    meta: [
+      { title: "Pesanan Saya — Aneka Ban Cikupa" },
+      { name: "description", content: "Lihat status pesanan dan pembayaran Anda di Aneka Ban Cikupa." },
+      { property: "og:title", content: "Pesanan Saya — Aneka Ban Cikupa" },
+      { property: "og:description", content: "Lihat status pesanan dan pembayaran Anda di Aneka Ban Cikupa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
 });
 
 type Order = {
@@ -17,6 +27,11 @@ type Order = {
   total: number;
   status: string;
   created_at: string;
+};
+
+type OrderPayment = {
+  order_id: string;
+  status: PaymentStatus;
 };
 
 const statusLabel: Record<string, string> = {
@@ -30,6 +45,7 @@ const statusLabel: Record<string, string> = {
 
 function MyOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [payments, setPayments] = useState<Record<string, PaymentStatus>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +54,20 @@ function MyOrders() {
         .from("orders")
         .select("id, total, status, created_at")
         .order("created_at", { ascending: false });
-      setOrders((data as Order[]) ?? []);
+      const nextOrders = (data as Order[]) ?? [];
+      setOrders(nextOrders);
+
+      if (nextOrders.length > 0) {
+        const { data: paymentRows } = await supabase
+          .from("payments")
+          .select("order_id, status")
+          .in("order_id", nextOrders.map((order) => order.id));
+        setPayments(
+          Object.fromEntries(
+            ((paymentRows as OrderPayment[]) ?? []).map((payment) => [payment.order_id, payment.status]),
+          ),
+        );
+      }
       setLoading(false);
     })();
   }, []);
@@ -60,21 +89,41 @@ function MyOrders() {
           </Card>
         ) : (
           <div className="mt-6 space-y-3">
-            {orders.map((o) => (
-              <Card key={o.id} className="p-4 flex items-center justify-between gap-4">
+            {orders.map((o) => {
+              const paymentStatus = payments[o.id] ?? "awaiting_payment";
+              const canPay = paymentStatus === "awaiting_payment" || paymentStatus === "rejected";
+              return (
+              <Card key={o.id} className="p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="font-mono text-xs text-muted-foreground">#{o.id.slice(0, 8).toUpperCase()}</div>
                   <div className="mt-1 text-sm">{new Date(o.created_at).toLocaleString("id-ID")}</div>
                 </div>
-                <div className="text-right">
+                <div className="sm:text-right">
                   <Badge variant="secondary">{statusLabel[o.status] ?? o.status}</Badge>
                   <div className="mt-1 font-bold text-primary">Rp {Number(o.total).toLocaleString("id-ID")}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {paymentStatus === "awaiting_verification" && "Menunggu Verifikasi"}
+                    {paymentStatus === "verified" && "Sudah Dibayar"}
+                    {paymentStatus === "rejected" && "Pembayaran Ditolak"}
+                    {paymentStatus === "awaiting_payment" && "Belum Dibayar"}
+                    {paymentStatus === "expired" && "Pembayaran Kedaluwarsa"}
+                  </div>
                 </div>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/orders/$id" params={{ id: o.id }}>Detail</Link>
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  {canPay && (
+                    <Button asChild size="sm" className="gap-2">
+                      <Link to="/payment/$id" params={{ id: o.id }}>
+                        <CreditCard className="h-4 w-4" /> Bayar Sekarang
+                      </Link>
+                    </Button>
+                  )}
+                  <Button asChild variant="outline" size="sm">
+                    <Link to="/orders/$id" params={{ id: o.id }}>Detail</Link>
+                  </Button>
+                </div>
               </Card>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

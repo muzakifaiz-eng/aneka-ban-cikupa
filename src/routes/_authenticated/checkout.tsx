@@ -12,7 +12,16 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/checkout")({
   component: CheckoutPage,
-  head: () => ({ meta: [{ title: "Checkout — Aneka Ban Cikupa" }] }),
+  head: () => ({
+    meta: [
+      { title: "Checkout — Aneka Ban Cikupa" },
+      { name: "description", content: "Selesaikan data pengiriman dan pesanan Anda di Aneka Ban Cikupa." },
+      { property: "og:title", content: "Checkout — Aneka Ban Cikupa" },
+      { property: "og:description", content: "Selesaikan data pengiriman dan pesanan Anda di Aneka Ban Cikupa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
 });
 
 function CheckoutPage() {
@@ -72,7 +81,7 @@ function CheckoutPage() {
 
       clear();
       toast.success("Pesanan berhasil dibuat!");
-      navigate({ to: "/orders/$id", params: { id: order.id } });
+      navigate({ to: "/payment/$id", params: { id: order.id } });
     } catch (err: any) {
       toast.error(err?.message ?? "Gagal membuat order");
     } finally {

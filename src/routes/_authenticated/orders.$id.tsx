@@ -23,6 +23,9 @@ import {
   Phone,
   StickyNote,
   Circle,
+  CreditCard,
+  Landmark,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReviewModal } from "@/components/review-modal";
@@ -30,7 +33,16 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/orders/$id")({
   component: OrderDetail,
-  head: () => ({ meta: [{ title: "Detail Pesanan — Aneka Ban Cikupa" }] }),
+  head: () => ({
+    meta: [
+      { title: "Detail Pesanan — Aneka Ban Cikupa" },
+      { name: "description", content: "Lacak pesanan, lihat pembayaran, dan periksa detail pembelian Anda." },
+      { property: "og:title", content: "Detail Pesanan — Aneka Ban Cikupa" },
+      { property: "og:description", content: "Lacak pesanan, lihat pembayaran, dan periksa detail pembelian Anda." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
 });
 
 type OrderStatus = "pending" | "processing" | "ready" | "shipped" | "completed" | "cancelled";
@@ -245,6 +257,23 @@ function OrderDetail() {
   const StatusIcon = meta.icon;
   const isCancelled = order.status === "cancelled";
   const orderCode = `#${order.id.slice(0, 8).toUpperCase()}`;
+  const isRefunded = refund?.status === "refunded";
+  const displayedPaymentStatus = payment?.status ?? "awaiting_payment";
+  const canPay = displayedPaymentStatus === "awaiting_payment" || displayedPaymentStatus === "rejected";
+  const paymentLabel = isRefunded
+    ? "Dana Dikembalikan"
+    : displayedPaymentStatus === "awaiting_payment"
+      ? "Belum Dibayar"
+      : displayedPaymentStatus === "awaiting_verification"
+        ? "Menunggu Verifikasi"
+        : displayedPaymentStatus === "verified"
+          ? "Pembayaran Berhasil"
+          : displayedPaymentStatus === "rejected"
+            ? "Pembayaran Ditolak"
+            : "Pembayaran Kedaluwarsa";
+  const paymentBadgeClass = isRefunded
+    ? "bg-emerald-600 text-primary-foreground"
+    : paymentStatusMeta[displayedPaymentStatus].className;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 text-foreground">
@@ -329,6 +358,54 @@ function OrderDetail() {
             </div>
           </Card>
         )}
+
+        {/* Payment summary */}
+        <Card className="mt-6 p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                <CreditCard className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-bold text-lg">Pembayaran</h2>
+                <Badge className={cn("mt-2 border-0", paymentBadgeClass)}>{paymentLabel}</Badge>
+              </div>
+            </div>
+            <div className="sm:text-right">
+              <div className="text-xs text-muted-foreground">Total yang harus dibayar</div>
+              <div className="mt-1 text-2xl font-extrabold text-primary">
+                {rupiah(payment?.amount ?? order.total)}
+              </div>
+            </div>
+          </div>
+
+          {payment?.bank && (
+            <div className="mt-4 flex items-center gap-2 border-t pt-4 text-sm">
+              <Landmark className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Metode pembayaran:</span>
+              <span className="font-semibold">Transfer {payment.bank}</span>
+            </div>
+          )}
+
+          {displayedPaymentStatus === "rejected" && payment?.rejection_reason && (
+            <div className="mt-4 flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+              <div>
+                <div className="font-semibold text-destructive">Alasan penolakan</div>
+                <p className="text-foreground/80">{payment.rejection_reason}</p>
+              </div>
+            </div>
+          )}
+
+          {!isRefunded && canPay && (
+            <Button asChild className="mt-5 gap-2">
+              <Link to="/payment/$id" params={{ id: order.id }}>
+                <CreditCard className="h-4 w-4" />
+                {displayedPaymentStatus === "rejected" ? "Bayar / Upload Ulang" : "Bayar Sekarang"}
+              </Link>
+            </Button>
+          )}
+        </Card>
 
         {/* Action buttons */}
         <div className="mt-4 flex flex-wrap gap-2">
