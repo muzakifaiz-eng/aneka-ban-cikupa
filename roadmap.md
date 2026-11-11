@@ -1,0 +1,2 @@
+- [ ] Implement secure customer notifications, promotion preferences, automatic service updates, customer inbox, and admin promotion management.
+- [ ] Verify app build and available user flows; note that replies/scheduled delivery need systems that do not exist yet.
